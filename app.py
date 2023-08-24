@@ -62,7 +62,7 @@ def home():
 @app.route("/api/generate")
 def generate():
     while True:
-        email = generate_random_email(3) + f"@{generate_random_email(1)}.com"
+        email = generate_random_email(2) + f"@{generate_random_email(1)}.com"
         app_id = generate_random_string(5, 64)
         try:register(api_key, email, app_id)
         except SystemError:continue
