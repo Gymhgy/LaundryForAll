@@ -1,30 +1,33 @@
 import random
 import requests
 from requests.structures import CaseInsensitiveDict
-
+from requests import Request, Session
 
 def register(api_key, email, token):
-    url = "https://digitalinsights.cscsw.com/api/auth/register_device_check"
-    headers = CaseInsensitiveDict()
-    headers["X-API-KEY"] = api_key
-    headers["User-Agent"] = ""
-    headers["Authorization"] = "Basic YWRtaW46OTMxNQ=="
-    headers["Content-Type"] = "application/json"
-    data = f"""
-    {{
-        "sitecode": "000001",
-        "password": "cheaplaundry",
-        "referring_uid": "",
-        "app_type": "2",
-        "location_code": "D9999       ",
-        "app_token": {token},
-        "email": {email},
-        "confirm_password": "cheaplaundry"
-    }}
-    """
+    s = Session()
 
-    resp = requests.post(url, headers=headers, data=data)
-    if resp.ok: raise SystemError
+    headers = {
+        'X-API-KEY': api_key,
+        'Content-Type': 'application/json',
+        'User-Agent': ""
+    }
+
+    json_data = {
+        'sitecode': '000001',
+        'password': 'qwerty1',
+        'referring_uid': '',
+        'app_type': '2',
+        'location_code': 'D9999       ',
+        'app_token': token,
+        'email': email,
+        'confirm_password': 'qwerty1',
+    }
+
+    resp = requests.post('https://digitalinsights.cscsw.com/api/auth/register_device_check', headers=headers, json=json_data)
+    print(resp.headers)
+    print(resp.json())
+
+    if not resp.ok: raise SystemError
 
 words = requests.get("https://svnweb.freebsd.org/csrg/share/dict/words?view=co&content-type=text/plain", headers={"User-Agent": ""}).text.splitlines()
 
@@ -35,7 +38,7 @@ def generate_random_string(min_length, max_length):
     return random_string
 
 def generate_random_email(num_words):
-    return ''.join([random.choice(words) for i in range(num_words)])
+    return ''.join([random.choice(words) for i in range(num_words)]).lower()
 
 def get_api_key():
     url = "https://digitalinsights.cscsw.com/api/security/api_key"
