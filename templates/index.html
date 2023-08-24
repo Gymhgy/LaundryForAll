@@ -55,7 +55,7 @@
 
   sendButton.addEventListener('click', () => {
     // Send HTTP request here
-    fetch('http://127.0.0.1:5000/api/generate', {
+    fetch(window.location.href + 'api/generate', {
       method: 'GET',
     })
     .then(response => {
