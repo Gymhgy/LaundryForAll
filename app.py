@@ -49,19 +49,24 @@ def get_api_key():
 
 api_key = get_api_key()
 
-from flask import Flask
+from flask import Flask, render_template
 from flask_cors import CORS
 
 app = Flask(__name__)
-cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+cors = CORS(app, resources={r"/api/*": {"origins": "/"}})
 
+@app.route("/")
+def home():
+   return render_template('/index.html')
 
 @app.route("/api/generate")
 def generate():
     while True:
         email = generate_random_email(3) + f"@{generate_random_email(1)}.com"
-        print(email)
         app_id = generate_random_string(5, 64)
         try:register(api_key, email, app_id)
         except SystemError:continue
         return email
+    
+if __name__ == '__main__':
+   app.run(host="0.0.0.0", port=5000)
